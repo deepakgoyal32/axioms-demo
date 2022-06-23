@@ -1,0 +1,104 @@
+<div class="left">
+  <div class="row flex-container">
+    <div class="col-md-8">
+      <h4>Select Use Case</h4>
+      <mat-form-field class="width200 right">
+        <mat-label>Favorite Use Case</mat-label>
+        <mat-select [(ngModel)]="selectedValue" class="">
+          <mat-option *ngFor="let useCase of useCases" [value]="useCase.value">
+            {{useCase.key}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="width100 right" *ngIf="selectedValue == 0">
+        <mat-label>Operator</mat-label>
+        <mat-select [(ngModel)]="selectedSymbol" [value]="e">
+          <mat-option *ngFor="let symbol of symbols" [value]="symbol.value">
+            {{symbol.key}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field class="right">
+        <input matInput #todo placeholder="Input Values" name="todo">
+      </mat-form-field>
+      <button mat-raised-button color="primary" (click)="SendRequest(todo.value)">Request</button>
+      <br />
+      <div class="tableDiv border" [ngClass]="selectedValue == 0 ? 'width800': 'width708'">
+        <table *ngIf="!showTable2 && !showTable3 && selectedValue == 0" mat-table [dataSource]="dataSource1" class="width708" [ngClass]="selectedValue == 0 ? 'width800': 'width708'">
+          <ng-container matColumnDef="balance">
+            <mat-header-cell *matHeaderCellDef> Balance </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.balance}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="walletAddress">
+            <mat-header-cell *matHeaderCellDef> Wallet Address </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.address}} </mat-cell>
+          </ng-container>
+        
+          <mat-header-row *matHeaderRowDef="displayedColumns1"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns1;"></mat-row>
+        </table>
+        <table *ngIf="!showTable2 && !showTable3 && !(selectedValue == 0)" mat-table [dataSource]="dataSource" class="width708" [ngClass]="selectedValue == 0 ? 'width800': 'width708'">
+          <ng-container matColumnDef="walletAddress">
+            <mat-header-cell *matHeaderCellDef> Wallet Address </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element}} </mat-cell>
+          </ng-container>
+        
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </table>
+        <table *ngIf="showTable2 && !showTable3" mat-table [dataSource]="dataSource2" class="width708" [ngClass]="selectedValue == 0 ? 'width800': 'width708'">
+          <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="link">
+            <mat-header-cell *matHeaderCellDef> View Provider Page </mat-header-cell>
+            <mat-cell *matCellDef="let element"> <a href="{{element.permalink}}" target="_blank">View Provider Page</a></mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="owner_address">
+            <mat-header-cell *matHeaderCellDef> Wallet Address </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.owner_address}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="token_id">
+            <mat-header-cell *matHeaderCellDef> View on Etherscan </mat-header-cell>
+            <mat-cell *matCellDef="let element"> <a target="_blank" href="https://etherscan.io/nft/{{element.contract_address}}/{{element.token_id}}">View on Etherscan</a> </mat-cell>
+          </ng-container>
+          <mat-header-row *matHeaderRowDef="displayedColumns2"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns2;"></mat-row>
+        </table>
+        <table *ngIf="showTable3 && !showTable2" mat-table [dataSource]="dataSource4" class="width708" [ngClass]="selectedValue == 0 ? 'width800': 'width708'">
+          <ng-container matColumnDef="collection_name">
+            <mat-header-cell *matHeaderCellDef> Collection Name </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.collection_name}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="link">
+            <mat-header-cell *matHeaderCellDef> View Provider Page </mat-header-cell>
+            <mat-cell *matCellDef="let element"> <a href="{{element.permalink}}" target="_blank">View Provider Page</a> </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="owner_address">
+            <mat-header-cell *matHeaderCellDef> Wallet Address </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.owner_address}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="token_id">
+            <mat-header-cell *matHeaderCellDef> View on Etherscan </mat-header-cell>
+            <mat-cell *matCellDef="let element"> <a target="_blank" href="https://etherscan.io/nft/{{element.contract_address}}/{{element.token_id}}">View on Etherscan</a> </mat-cell>
+          </ng-container>
+          <mat-header-row *matHeaderRowDef="displayedColumns3"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns3;"></mat-row>
+        </table>
+      </div>
+    </div>
+    <div class="col-md-4 spiner">
+      <mat-progress-spinner *ngIf="displayProgressSpinnerInBlock"
+      [color]="color"
+      [mode]="mode"
+      [value]="value">
+      </mat-progress-spinner>
+    </div>
+  </div>
+  
+</div>
+
+
+
+<router-outlet></router-outlet>
