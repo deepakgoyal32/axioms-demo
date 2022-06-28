@@ -21,7 +21,7 @@
       <mat-form-field class="right">
         <input matInput #todo placeholder="Input Values" name="todo">
       </mat-form-field>
-      <button mat-raised-button color="primary" (click)="SendRequest(todo.value)">Request</button>
+      <button mat-raised-button color="primary" (click)="SendRequest(todo.value, 1)">Request</button>
       <br />
       <div class="tableDiv border" [ngClass]="selectedValue == 0 ? 'width800': 'width708'">
         <table *ngIf="!showTable2 && !showTable3 && selectedValue == 0" mat-table [dataSource]="dataSource1" class="width708" [ngClass]="selectedValue == 0 ? 'width800': 'width708'">
@@ -87,6 +87,11 @@
           <mat-row *matRowDef="let row; columns: displayedColumns3;"></mat-row>
         </table>
       </div>
+      <br />
+      <div class="button-paginator">
+        <button mat-raised-button color="primary" [ngStyle]="{ display: previous > 0 ? 'block': 'none' }" (click)="SendRequest(todo.value, previous)">Previous</button>
+        <button mat-raised-button color="primary" [ngStyle]="{ display: next > 0 ? 'block': 'none' }" (click)="SendRequest(todo.value, next)">Next</button>
+      </div>
     </div>
     <div class="col-md-4 spiner">
       <mat-progress-spinner *ngIf="displayProgressSpinnerInBlock"
@@ -96,9 +101,6 @@
       </mat-progress-spinner>
     </div>
   </div>
-  
 </div>
-
-
 
 <router-outlet></router-outlet>

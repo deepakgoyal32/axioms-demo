@@ -25,6 +25,8 @@ export class AppComponent {
   selectedSymbol: string = 'eq';
   showTable2: boolean = false;
   showTable3: boolean = false;
+  next: number = 0;
+  previous: number = 0;
   useCases: Case[] = [
     { value: '0', key: 'Use Case 1: Wallets having X price' },
     { value: '1', key: 'Use Case 2: Wallets having X nft count' },
@@ -61,39 +63,71 @@ export class AppComponent {
 
   constructor(private http: HttpClient) { }
 
-  SendRequest(value: string) {
+  SendRequest(value: string, page: number) {
     console.log(value);
     console.log(this.selectedValue);
     this.dataSource = new MatTableDataSource<any>([]);
     this.displayProgressSpinnerInBlock = true;
     this.showTable2 = false;
     this.showTable3 = false;
+    this.next = 0;
+    this.previous = 0;
     if (this.selectedValue == '0') {
       let symbol = this.selectedSymbol;
-      this.getWalletAddressesForXPrice(value, symbol).subscribe(response => {
+      this.getWalletAddressesForXPrice(value, symbol, page).subscribe(response => {
         this.dataSource1 = new MatTableDataSource<any>(response.results);
+        if (response.next && response.next.page && response.next.page !== '' && response.next.page !== 0) {
+          this.next = response.next.page;
+        }
+        if (response.previous && response.previous.page && response.previous.page !== '' && response.previous.page !== 0) {
+          this.previous = response.previous.page;
+        }
         this.displayProgressSpinnerInBlock = false;
       });
     } else if(this.selectedValue == '1') {
-      this.getWalletAddressesForXNFTCount(value).subscribe(response => {
-        this.dataSource = new MatTableDataSource<any>(response.map(obj => obj.address));
+      this.getWalletAddressesForXNFTCount(value, page).subscribe(response => {
+        this.dataSource = new MatTableDataSource<any>(response.results.map(obj => obj.address));
+        if (response.next && response.next.page && response.next.page !== '' && response.next.page !== 0) {
+          this.next = response.next.page;
+        }
+        if (response.previous && response.previous.page && response.previous.page !== '' && response.previous.page !== 0) {
+          this.previous = response.previous.page;
+        }
         this.displayProgressSpinnerInBlock = false;
       });
     } else if(this.selectedValue == '2') {
-      this.getWalletAddressesForExactNameSearch(value).subscribe(response => {
-        this.dataSource2 = new MatTableDataSource<any>(response);
+      this.getWalletAddressesForExactNameSearch(value, page).subscribe(response => {
+        this.dataSource2 = new MatTableDataSource<any>(response.results); 
+        if (response.next && response.next.page && response.next.page !== '' && response.next.page !== 0) {
+          this.next = response.next.page;
+        }
+        if (response.previous && response.previous.page && response.previous.page !== '' && response.previous.page !== 0) {
+          this.previous = response.previous.page;
+        }
         this.displayProgressSpinnerInBlock = false;
         this.showTable2 = true;
         this.showTable3 = false;
       });
     } else if(this.selectedValue == '3') {
-      this.getWalletAddressesForPriceRange(Number(value.split('-')[0]), Number(value.split('-')[1])).subscribe(response => {
+      this.getWalletAddressesForPriceRange(Number(value.split('-')[0]), Number(value.split('-')[1]), page).subscribe(response => {
         this.dataSource = new MatTableDataSource<any>(response);
+        if (response.next && response.next.page && response.next.page !== '' && response.next.page !== 0) {
+          this.next = response.next.page;
+        }
+        if (response.previous && response.previous.page && response.previous.page !== '' && response.previous.page !== 0) {
+          this.previous = response.previous.page;
+        }
         this.displayProgressSpinnerInBlock = false;
       });
     } else if(this.selectedValue == '4') {
-      this.getWalletAddressesForExactCollectionSearch(value).subscribe(response => {
-        this.dataSource4 = new MatTableDataSource<any>(response);
+      this.getWalletAddressesForExactCollectionSearch(value, page).subscribe(response => {
+        this.dataSource4 = new MatTableDataSource<any>(response.results);
+        if (response.next && response.next.page && response.next.page !== '' && response.next.page !== 0) {
+          this.next = response.next.page;
+        }
+        if (response.previous && response.previous.page && response.previous.page !== '' && response.previous.page !== 0) {
+          this.previous = response.previous.page;
+        }
         this.displayProgressSpinnerInBlock = false;
         this.showTable2 = false;
         this.showTable3 = true;
@@ -101,39 +135,39 @@ export class AppComponent {
     }
   }
 
-  public getWalletAddressesForXPrice(value: string, symbol: string): Observable<any> {
-    const url = 'http://107.22.58.206:9000/wallet/address?price=' + value + '&symbol=' + symbol;
+  public getWalletAddressesForXPrice(value: string, symbol: string, page: number): Observable<any> {
+    const url = 'http://107.22.58.206:9001/wallet/address?price=' + value + '&symbol=' + symbol + (page > 0 ? '&page=' + page : '');
     console.log(url);
     return this.http.get<any>(url);
   }
 
-  public getWalletAddressesForXNFTCount(value: string): Observable<any> {
-    const url = 'http://107.22.58.206:9000/nfts/address?count=' + value;
+  public getWalletAddressesForXNFTCount(value: string, page: number): Observable<any> {
+    const url = 'http://107.22.58.206:9001/nfts/address?count=' + value + (page > 0 ? '&page=' + page : '');
     return this.http.get<any>(url);
   } 
   
-  public getWalletAddressesForSearch(value: string): Observable<any> {
-    const url = 'http://107.22.58.206:9000/nfts/search?p=' + value;
+  public getWalletAddressesForSearch(value: string, page: number): Observable<any> {
+    const url = 'http://107.22.58.206:9001/nfts/search?p=' + value + (page > 0 ? '&page=' + page : '');
     return this.http.get<any>(url);
   }
 
-  public getWalletAddressesForCommunitySpecificSearch(value: string): Observable<any> {
-    const url = 'http://107.22.58.206:9000/nfts/collection?name=' + value;
+  public getWalletAddressesForCommunitySpecificSearch(value: string, page: number): Observable<any> {
+    const url = 'http://107.22.58.206:9001/nfts/collection?name=' + value + (page > 0 ? '&page=' + page : '');
     return this.http.get<any>(url);
   }
 
-  public getWalletAddressesForPriceRange(min: number, max: number): Observable<any> {
-    const url = 'http://107.22.58.206:9000/nfts/price?gte=' + min + '&lte=' + max;
+  public getWalletAddressesForPriceRange(min: number, max: number, page: number): Observable<any> {
+    const url = 'http://107.22.58.206:9001/nfts/price?gte=' + min + '&lte=' + max + (page > 0 ? '&page=' + page : '');
     return this.http.get<any>(url);
   }
 
-  public getWalletAddressesForExactNameSearch(value: string): Observable<any> {
-    const url = 'http://107.22.58.206:9000/nfts/name/search?p=' + value;
+  public getWalletAddressesForExactNameSearch(value: string, page: number): Observable<any> {
+    const url = 'http://107.22.58.206:9001/nfts/name/search?p=' + value + (page > 0 ? '&page=' + page : '');
     return this.http.get<any>(url);
   }
 
-  public getWalletAddressesForExactCollectionSearch(value: string): Observable<any> {
-    const url = 'http://107.22.58.206:9000/nfts/collection/search?p=' + value;
+  public getWalletAddressesForExactCollectionSearch(value: string, page: number): Observable<any> {
+    const url = 'http://107.22.58.206:9001/nfts/collection/search?p=' + value + (page > 0 ? '&page=' + page : '');
     return this.http.get<any>(url);
   }
 }
