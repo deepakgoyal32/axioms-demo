@@ -10,7 +10,7 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-form-field class="width100 right" *ngIf="selectedValue == 0">
+      <mat-form-field class="width100 right" *ngIf="selectedValue == 0 || selectedValue == 1">
         <mat-label>Operator</mat-label>
         <mat-select [(ngModel)]="selectedSymbol" [value]="e">
           <mat-option *ngFor="let symbol of symbols" [value]="symbol.value">
@@ -23,7 +23,7 @@
       </mat-form-field>
       <button mat-raised-button color="primary" (click)="SendRequest(todo.value, 1)">Request</button>
       <br />
-      <div class="tableDiv border" [ngClass]="selectedValue == 0 ? 'width800': 'width708'">
+      <div class="tableDiv border" [ngClass]="selectedValue == 0 || selectedValue == 1 ? 'width800': 'width708'">
         <table *ngIf="!showTable2 && !showTable3 && selectedValue == 0" mat-table [dataSource]="dataSource1" class="width708" [ngClass]="selectedValue == 0 ? 'width800': 'width708'">
           <ng-container matColumnDef="balance">
             <mat-header-cell *matHeaderCellDef> Balance </mat-header-cell>
@@ -37,7 +37,7 @@
           <mat-header-row *matHeaderRowDef="displayedColumns1"></mat-header-row>
           <mat-row *matRowDef="let row; columns: displayedColumns1;"></mat-row>
         </table>
-        <table *ngIf="!showTable2 && !showTable3 && !(selectedValue == 0)" mat-table [dataSource]="dataSource" class="width708" [ngClass]="selectedValue == 0 ? 'width800': 'width708'">
+        <table *ngIf="!showTable2 && !showTable3 && !(selectedValue == 0 || selectedValue == 1)" mat-table [dataSource]="dataSource" class="width708" [ngClass]="selectedValue == 0 || selectedValue == 1 ? 'width800': 'width708'">
           <ng-container matColumnDef="walletAddress">
             <mat-header-cell *matHeaderCellDef> Wallet Address </mat-header-cell>
             <mat-cell *matCellDef="let element"> {{element}} </mat-cell>
@@ -46,7 +46,24 @@
           <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
           <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
         </table>
-        <table *ngIf="showTable2 && !showTable3" mat-table [dataSource]="dataSource2" class="width708" [ngClass]="selectedValue == 0 ? 'width800': 'width708'">
+        <table *ngIf="!showTable2 && !showTable3 && !(selectedValue == 0 || selectedValue == 3)" mat-table [dataSource]="dataSource5" class="width708" [ngClass]="selectedValue == 0 || selectedValue == 1 ? 'width800': 'width708'">
+          <ng-container matColumnDef="owner_address">
+            <mat-header-cell *matHeaderCellDef> Wallet Address </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.address}} </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="count">
+            <mat-header-cell *matHeaderCellDef> NFT Count </mat-header-cell>
+            <mat-cell *matCellDef="let element"> {{element.count}} </mat-cell>
+          </ng-container>
+          <ng-container  matColumnDef="xlink">
+            <mat-header-cell *matHeaderCellDef> </mat-header-cell>
+            <mat-cell *matCellDef="let element"> <button mat-raised-button color="primary" (click)="openDialog(element.address)">View NFT</button> </mat-cell>
+          </ng-container>
+          <mat-header-row *matHeaderRowDef="displayedColumns5"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns5;"></mat-row>
+        </table>
+
+        <table *ngIf="showTable2 && !showTable3" mat-table [dataSource]="dataSource2" class="width708" [ngClass]="selectedValue == 0 || selectedValue == 1 ? 'width800': 'width708'">
           <ng-container matColumnDef="name">
             <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
             <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
@@ -66,7 +83,7 @@
           <mat-header-row *matHeaderRowDef="displayedColumns2"></mat-header-row>
           <mat-row *matRowDef="let row; columns: displayedColumns2;"></mat-row>
         </table>
-        <table *ngIf="showTable3 && !showTable2" mat-table [dataSource]="dataSource4" class="width708" [ngClass]="selectedValue == 0 ? 'width800': 'width708'">
+        <table *ngIf="showTable3 && !showTable2" mat-table [dataSource]="dataSource4" class="width708" [ngClass]="selectedValue == 0 || selectedValue == 1 ? 'width800': 'width708'">
           <ng-container matColumnDef="collection_name">
             <mat-header-cell *matHeaderCellDef> Collection Name </mat-header-cell>
             <mat-cell *matCellDef="let element"> {{element.collection_name}} </mat-cell>

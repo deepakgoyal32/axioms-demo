@@ -6,6 +6,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatDialog} from '@angular/material/dialog';
+import { DialogComponent } from './dialog/dialog.component';
 
 interface Case {
   value: string;
@@ -20,6 +22,7 @@ interface Case {
 
 
 export class AppComponent {
+  baseUrl: string = 'http://107.22.58.206:9000';
   input: string = '';
   selectedValue: any = '0';
   selectedSymbol: string = 'eq';
@@ -50,18 +53,30 @@ export class AppComponent {
   displayedColumns1 = ['balance', 'walletAddress'];
   displayedColumns2 = ['name', 'link', 'owner_address', 'token_id'];
   displayedColumns3 = ['collection_name', 'link', 'owner_address', 'token_id'];
+  displayedColumns5 = ['owner_address', 'count', 'xlink'];
 
   dataSource = new MatTableDataSource<any>(this.result);
   dataSource1 = new MatTableDataSource<any>([]);
   dataSource2 = new MatTableDataSource<any>([]);
   dataSource4 = new MatTableDataSource<any>([]);
+  dataSource5 = new MatTableDataSource<any>([]);
   
   mode = 'indeterminate';
   value = 50;
   color = 'primary';
   displayProgressSpinnerInBlock: boolean = false;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, public dialog:MatDialog) { }
+
+  openDialog(address: string) {
+    this.dialog.open(DialogComponent, {
+      data: {
+        address: address
+      },
+      height: '800',
+      width: '800'
+    });
+  }
 
   SendRequest(value: string, page: number) {
     console.log(value);
@@ -85,8 +100,8 @@ export class AppComponent {
         this.displayProgressSpinnerInBlock = false;
       });
     } else if(this.selectedValue == '1') {
-      this.getWalletAddressesForXNFTCount(value, page).subscribe(response => {
-        this.dataSource = new MatTableDataSource<any>(response.results.map(obj => obj.address));
+      this.getWalletAddressesForXNFTCount(value, page, this.selectedSymbol).subscribe(response => {
+        this.dataSource5 = new MatTableDataSource<any>(response.results);
         if (response.next && response.next.page && response.next.page !== '' && response.next.page !== 0) {
           this.next = response.next.page;
         }
@@ -136,38 +151,39 @@ export class AppComponent {
   }
 
   public getWalletAddressesForXPrice(value: string, symbol: string, page: number): Observable<any> {
-    const url = 'http://107.22.58.206:9001/wallet/address?price=' + value + '&symbol=' + symbol + (page > 0 ? '&page=' + page : '');
+    const url = this.baseUrl + '/wallet/address?price=' + value + '&symbol=' + symbol + (page > 0 ? '&page=' + page : '');
     console.log(url);
     return this.http.get<any>(url);
   }
 
-  public getWalletAddressesForXNFTCount(value: string, page: number): Observable<any> {
-    const url = 'http://107.22.58.206:9001/nfts/address?count=' + value + (page > 0 ? '&page=' + page : '');
+  public getWalletAddressesForXNFTCount(value: string, page: number, symbol: string): Observable<any> {
+    const url = this.baseUrl + '/nfts/address?count=' + value + '&symbol=' + symbol + (page > 0 ? '&page=' + page : '');
+    console.log(url);
     return this.http.get<any>(url);
   } 
   
   public getWalletAddressesForSearch(value: string, page: number): Observable<any> {
-    const url = 'http://107.22.58.206:9001/nfts/search?p=' + value + (page > 0 ? '&page=' + page : '');
+    const url = this.baseUrl + '/nfts/search?p=' + value + (page > 0 ? '&page=' + page : '');
     return this.http.get<any>(url);
   }
 
   public getWalletAddressesForCommunitySpecificSearch(value: string, page: number): Observable<any> {
-    const url = 'http://107.22.58.206:9001/nfts/collection?name=' + value + (page > 0 ? '&page=' + page : '');
+    const url = this.baseUrl + '/nfts/collection?name=' + value + (page > 0 ? '&page=' + page : '');
     return this.http.get<any>(url);
   }
 
   public getWalletAddressesForPriceRange(min: number, max: number, page: number): Observable<any> {
-    const url = 'http://107.22.58.206:9001/nfts/price?gte=' + min + '&lte=' + max + (page > 0 ? '&page=' + page : '');
+    const url = this.baseUrl + '/nfts/price?gte=' + min + '&lte=' + max + (page > 0 ? '&page=' + page : '');
     return this.http.get<any>(url);
   }
 
   public getWalletAddressesForExactNameSearch(value: string, page: number): Observable<any> {
-    const url = 'http://107.22.58.206:9001/nfts/name/search?p=' + value + (page > 0 ? '&page=' + page : '');
+    const url = this.baseUrl + '/nfts/name/search?p=' + value + (page > 0 ? '&page=' + page : '');
     return this.http.get<any>(url);
   }
 
   public getWalletAddressesForExactCollectionSearch(value: string, page: number): Observable<any> {
-    const url = 'http://107.22.58.206:9001/nfts/collection/search?p=' + value + (page > 0 ? '&page=' + page : '');
+    const url = this.baseUrl + '/nfts/collection/search?p=' + value + (page > 0 ? '&page=' + page : '');
     return this.http.get<any>(url);
   }
 }
