@@ -38,9 +38,9 @@
           <mat-row *matRowDef="let row; columns: displayedColumns1;"></mat-row>
         </table>
         <table *ngIf="!showTable2 && !showTable3 && !(selectedValue == 0 || selectedValue == 1)" mat-table [dataSource]="dataSource" class="width708" [ngClass]="selectedValue == 0 || selectedValue == 1 ? 'width800': 'width708'">
-          <ng-container matColumnDef="walletAddress">
+          <ng-container matColumnDef="address">
             <mat-header-cell *matHeaderCellDef> Wallet Address </mat-header-cell>
-            <mat-cell *matCellDef="let element"> {{element}} </mat-cell>
+            <mat-cell *matCellDef="let element"> {{element.address}} </mat-cell>
           </ng-container>
         
           <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
@@ -49,15 +49,15 @@
         <table *ngIf="!showTable2 && !showTable3 && !(selectedValue == 0 || selectedValue == 3)" mat-table [dataSource]="dataSource5" class="width708" [ngClass]="selectedValue == 0 || selectedValue == 1 ? 'width800': 'width708'">
           <ng-container matColumnDef="owner_address">
             <mat-header-cell *matHeaderCellDef> Wallet Address </mat-header-cell>
-            <mat-cell *matCellDef="let element"> {{element.address}} </mat-cell>
+            <mat-cell *matCellDef="let element"> {{element.owner_address}} </mat-cell>
           </ng-container>
-          <ng-container matColumnDef="count">
+          <ng-container matColumnDef="count_id">
             <mat-header-cell *matHeaderCellDef> NFT Count </mat-header-cell>
-            <mat-cell *matCellDef="let element"> {{element.count}} </mat-cell>
+            <mat-cell *matCellDef="let element"> {{element.count_id}} </mat-cell>
           </ng-container>
           <ng-container  matColumnDef="xlink">
             <mat-header-cell *matHeaderCellDef> </mat-header-cell>
-            <mat-cell *matCellDef="let element"> <button mat-raised-button color="primary" (click)="openDialog(element.address)">View NFT</button> </mat-cell>
+            <mat-cell *matCellDef="let element"> <button mat-raised-button color="primary" (click)="openDialog(element.owner_address)">View NFT</button> </mat-cell>
           </ng-container>
           <mat-header-row *matHeaderRowDef="displayedColumns5"></mat-header-row>
           <mat-row *matRowDef="let row; columns: displayedColumns5;"></mat-row>

@@ -22,7 +22,7 @@ interface Case {
 
 
 export class AppComponent {
-  baseUrl: string = 'http://107.22.58.206:9000';
+  baseUrl: string = 'http://localhost:9001'; //'http://107.22.58.206:9000';
   input: string = '';
   selectedValue: any = '0';
   selectedSymbol: string = 'eq';
@@ -49,11 +49,11 @@ export class AppComponent {
   result: string[] = [
   ];
 
-  displayedColumns = ['walletAddress'];
+  displayedColumns = ['address'];
   displayedColumns1 = ['balance', 'walletAddress'];
   displayedColumns2 = ['name', 'link', 'owner_address', 'token_id'];
   displayedColumns3 = ['collection_name', 'link', 'owner_address', 'token_id'];
-  displayedColumns5 = ['owner_address', 'count', 'xlink'];
+  displayedColumns5 = ['owner_address', 'count_id', 'xlink'];
 
   dataSource = new MatTableDataSource<any>(this.result);
   dataSource1 = new MatTableDataSource<any>([]);
@@ -125,7 +125,7 @@ export class AppComponent {
       });
     } else if(this.selectedValue == '3') {
       this.getWalletAddressesForPriceRange(Number(value.split('-')[0]), Number(value.split('-')[1]), page).subscribe(response => {
-        this.dataSource = new MatTableDataSource<any>(response);
+        this.dataSource = new MatTableDataSource<any>(response.results);
         if (response.next && response.next.page && response.next.page !== '' && response.next.page !== 0) {
           this.next = response.next.page;
         }
@@ -151,39 +151,39 @@ export class AppComponent {
   }
 
   public getWalletAddressesForXPrice(value: string, symbol: string, page: number): Observable<any> {
-    const url = this.baseUrl + '/wallet/address?price=' + value + '&symbol=' + symbol + (page > 0 ? '&page=' + page : '');
+    const url = this.baseUrl + '/wallet/address?price=' + value + '&symbol=' + symbol + '&limit=50' + (page > 0 ? '&page=' + page : '');
     console.log(url);
     return this.http.get<any>(url);
   }
 
   public getWalletAddressesForXNFTCount(value: string, page: number, symbol: string): Observable<any> {
-    const url = this.baseUrl + '/nfts/address?count=' + value + '&symbol=' + symbol + (page > 0 ? '&page=' + page : '');
+    const url = this.baseUrl + '/nfts/address?count=' + value + '&symbol=' + symbol + '&limit=50' + (page > 0 ? '&page=' + page : '');
     console.log(url);
     return this.http.get<any>(url);
   } 
   
   public getWalletAddressesForSearch(value: string, page: number): Observable<any> {
-    const url = this.baseUrl + '/nfts/search?p=' + value + (page > 0 ? '&page=' + page : '');
+    const url = this.baseUrl + '/nfts/search?p=' + value + '&limit=50' + (page > 0 ? '&page=' + page : '');
     return this.http.get<any>(url);
   }
 
   public getWalletAddressesForCommunitySpecificSearch(value: string, page: number): Observable<any> {
-    const url = this.baseUrl + '/nfts/collection?name=' + value + (page > 0 ? '&page=' + page : '');
+    const url = this.baseUrl + '/nfts/collection?name=' + value + '&limit=50' + (page > 0 ? '&page=' + page : '');
     return this.http.get<any>(url);
   }
 
   public getWalletAddressesForPriceRange(min: number, max: number, page: number): Observable<any> {
-    const url = this.baseUrl + '/nfts/price?gte=' + min + '&lte=' + max + (page > 0 ? '&page=' + page : '');
+    const url = this.baseUrl + '/nfts/price?gte=' + min + '&lte=' + max + '&limit=50' + (page > 0 ? '&page=' + page : '');
     return this.http.get<any>(url);
   }
 
   public getWalletAddressesForExactNameSearch(value: string, page: number): Observable<any> {
-    const url = this.baseUrl + '/nfts/name/search?p=' + value + (page > 0 ? '&page=' + page : '');
+    const url = this.baseUrl + '/nfts/name/search?p=' + value + '&limit=50' + (page > 0 ? '&page=' + page : '');
     return this.http.get<any>(url);
   }
 
   public getWalletAddressesForExactCollectionSearch(value: string, page: number): Observable<any> {
-    const url = this.baseUrl + '/nfts/collection/search?p=' + value + (page > 0 ? '&page=' + page : '');
+    const url = this.baseUrl + '/nfts/collection/search?p=' + value + '&limit=50' + (page > 0 ? '&page=' + page : '');
     return this.http.get<any>(url);
   }
 }

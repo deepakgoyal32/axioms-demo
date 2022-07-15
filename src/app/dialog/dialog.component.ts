@@ -10,7 +10,7 @@ import { MatTableDataSource } from '@angular/material/table';
   styleUrls: ['./dialog.component.scss']
 })
 export class DialogComponent implements OnInit {
-  baseUrl: string = 'http://107.22.58.206:9000';
+  baseUrl: string = 'http://localhost:9001'; //'http://107.22.58.206:9000';
   next: number = 0;
   previous: number = 0;
   displayedColumns11 = ['name', 'collection_name', 'permalink'];
@@ -47,6 +47,7 @@ export class DialogComponent implements OnInit {
 
   public getNFTNames(value: string, page: number): Observable<any> {
     const url = this.baseUrl + '/nfts/address/name?address=' + value + (page > 0 ? '&page=' + page : '');
+    console.log(url);
     return this.http.get<any>(url);
   } 
 }
